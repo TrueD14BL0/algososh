@@ -36,7 +36,7 @@ export const StringComponent: React.FC = () => {
   }
 
   const sortArr = (arrForWork: TArrayElement[], start: number, end: number) => {
-    const tempArr = arrForWork.map(el=>el);
+    const tempArr = arrForWork.slice(0);
     swapElements(tempArr, start, end);
     tempArr[++start].state = ElementStates.Changing;
     tempArr[--end].state = ElementStates.Changing;
