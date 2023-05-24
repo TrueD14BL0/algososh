@@ -6,45 +6,41 @@ import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import { DELAY_IN_MS } from "../../constants/delays";
+import { TArrStringElement } from "../../types/t-arr-element";
 
 export const StringComponent: React.FC = () => {
 
-  type TArrayElement = {
-    letter: string,
-    state: ElementStates,
-  }
-
   const [inputedText, setText] = useState("");
-  const [renderArray, setRenderArray] = useState<TArrayElement[]>([]);
+  const [renderArray, setRenderArray] = useState<TArrStringElement[]>([]);
   const [isStart, setStart] = useState(false);
 
-  const convertStrToArr = (): TArrayElement[] => {
+  const convertStrToArr = (): TArrStringElement[] => {
     const arr = inputedText.split('');
-    const arrToWork: TArrayElement[] = [];
+    const arrToWork: TArrStringElement[] = [];
     arr.forEach(element => {
-      arrToWork.push({letter: element, state: ElementStates.Default});
+      arrToWork.push({value: element, type: ElementStates.Default});
     });
     return arrToWork;
   }
 
-  const swapElements = (arrForWork: TArrayElement[], start: number, end: number) => {
+  const swapElements = (arrForWork: TArrStringElement[], start: number, end: number) => {
     const tempItem = arrForWork[start];
     arrForWork[start] = arrForWork[end];
-    arrForWork[start].state = ElementStates.Modified;
+    arrForWork[start].type = ElementStates.Modified;
     arrForWork[end] = tempItem;
-    arrForWork[end].state = ElementStates.Modified;
+    arrForWork[end].type = ElementStates.Modified;
   }
 
-  const sortArr = (arrForWork: TArrayElement[], start: number, end: number) => {
+  const sortArr = (arrForWork: TArrStringElement[], start: number, end: number) => {
     const tempArr = arrForWork.slice(0);
     swapElements(tempArr, start, end);
-    tempArr[++start].state = ElementStates.Changing;
-    tempArr[--end].state = ElementStates.Changing;
+    tempArr[++start].type = ElementStates.Changing;
+    tempArr[--end].type = ElementStates.Changing;
     if(start!==end){
       setRenderArray(tempArr);
       setTimeout(()=>{sortArr(tempArr, start, end)}, DELAY_IN_MS);
     }else{
-      tempArr[end].state = ElementStates.Modified;
+      tempArr[end].type = ElementStates.Modified;
       setRenderArray(tempArr);
       setStart(false);
     }
@@ -54,11 +50,11 @@ export const StringComponent: React.FC = () => {
     setStart(true);
     const arrForWork = convertStrToArr();
     if(arrForWork.length===1){
-      arrForWork[0].state = ElementStates.Modified;
+      arrForWork[0].type = ElementStates.Modified;
       setStart(false);
     }else{
-      arrForWork[0].state = ElementStates.Changing;
-      arrForWork[arrForWork.length-1].state = ElementStates.Changing;
+      arrForWork[0].type = ElementStates.Changing;
+      arrForWork[arrForWork.length-1].type = ElementStates.Changing;
       setTimeout(()=>sortArr(arrForWork, 0, arrForWork.length-1), DELAY_IN_MS);
     }
     setRenderArray(arrForWork);
@@ -70,7 +66,7 @@ export const StringComponent: React.FC = () => {
       <Button text="Развернуть" onClick={startAlgorithm} isLoader={isStart} disabled={isStart||inputedText.length===0}/>
       <div className={styles.flex}>
         {
-          renderArray.map((element, index)=><Circle letter={element.letter} key={index} state={element.state}/>)
+          renderArray.map((element, index)=><Circle letter={element.value} key={index} state={element.type}/>)
         }
       </div>
     </SolutionLayout>

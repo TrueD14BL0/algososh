@@ -8,20 +8,16 @@ import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { Direction } from "../../types/direction";
 import { ElementStates } from "../../types/element-states";
 import { sleep } from "../../utils/sleep";
+import { TArrNumberElement } from "../../types/t-arr-element";
 
 export const SortingPage: React.FC = () => {
 
-  type TArrElement ={
-    value: number,
-    type: ElementStates
-  }
-
-  const [renderArray, setRenderArray] = useState<TArrElement[]>([]);
+  const [renderArray, setRenderArray] = useState<TArrNumberElement[]>([]);
   const [isStart, setStart] = useState(false);
   const [sortType, setSortType] = useState('Выбор');
-  const randomArr = (): TArrElement[] => {
+  const randomArr = (): TArrNumberElement[] => {
     const qtyEl = Math.floor(Math.random() * 14+3);
-    const arrToRender: TArrElement[] = [];
+    const arrToRender: TArrNumberElement[] = [];
     for (let index = 0; index < qtyEl; index++) {
       const val = Math.floor(Math.random() * 100);
       arrToRender.push({
@@ -60,7 +56,6 @@ export const SortingPage: React.FC = () => {
         arrayToWork = arrayToWork.slice(0);
         arrayToWork[j].type = ElementStates.Default;
         arrayToWork[j+1].type = ElementStates.Default;
-        console.log(arrayToWork);
         setRenderArray(arrayToWork);
       }
       arrayToWork = arrayToWork.slice(0);
@@ -70,7 +65,7 @@ export const SortingPage: React.FC = () => {
     setStart(false);
   }
 
-  const sortByChoise = (arrayToSort: TArrElement[] ,positionForSortedEl: number, sortedElIndex: number, compareElIndex: number, asc: boolean) => {
+  const sortByChoise = (arrayToSort: TArrNumberElement[] ,positionForSortedEl: number, sortedElIndex: number, compareElIndex: number, asc: boolean) => {
     const arrayToWork = arrayToSort.slice(0);
     if(positionForSortedEl>=renderArray.length-1){
       arrayToWork[renderArray.length-1].type = ElementStates.Modified;
