@@ -4,9 +4,10 @@ import styles from './sorting-page.module.css';
 import { Column } from "../ui/column/column";
 import { RadioInput } from "../ui/radio-input/radio-input";
 import { Button } from "../ui/button/button";
-import { DELAY_IN_MS } from "../../constants/delays";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { Direction } from "../../types/direction";
 import { ElementStates } from "../../types/element-states";
+import { sleep } from "../../utils/sleep";
 
 export const SortingPage: React.FC = () => {
 
@@ -18,14 +19,13 @@ export const SortingPage: React.FC = () => {
   const [renderArray, setRenderArray] = useState<TArrElement[]>([]);
   const [isStart, setStart] = useState(false);
   const [sortType, setSortType] = useState('Выбор');
-//(Math.floor(Math.random() * 100)
   const randomArr = (): TArrElement[] => {
     const qtyEl = Math.floor(Math.random() * 14+3);
     const arrToRender: TArrElement[] = [];
     for (let index = 0; index < qtyEl; index++) {
       const val = Math.floor(Math.random() * 100);
       arrToRender.push({
-        value: val, 
+        value: val,
         type: ElementStates.Default,
       });
     }
@@ -42,42 +42,86 @@ export const SortingPage: React.FC = () => {
     setStart(false);
   }
 
-  const sortByChoise = (asc: boolean) => {
-    for (let i = 0; i < renderArray.length; i++) {
-      let arrForWork = renderArray.slice(0);
-      let elToCompare = arrForWork[i];
-      elToCompare.type = ElementStates.Changing;
-      setRenderArray(arrForWork);
-      for (let j = i+1; j < arrForWork.length; j++) {
-        let arrForWork = renderArray.slice(0);
-        let ecurrentEl = arrForWork[j];
-        ecurrentEl.type = ElementStates.Changing;
-        setRenderArray(arrForWork);
-        if (elToCompare.value > arrForWork[j].value){
-          elToCompare = arrForWork[j];
+  const sortByBubble = async (asc: boolean) => {
+    let arrayToWork = renderArray.slice(0);
+    for (let i = 0; i < arrayToWork.length; i++) {
+      for (let j = 0; j < arrayToWork.length - 1 - i; j++) {
+        arrayToWork = arrayToWork.slice(0);
+        arrayToWork[j].type = ElementStates.Changing;
+        arrayToWork[j+1].type = ElementStates.Changing;
+        if (asc?
+          arrayToWork[j].value > arrayToWork[j + 1].value:
+          arrayToWork[j].value < arrayToWork[j + 1].value) {
+          const tempEl = arrayToWork.splice(j + 1,1);
+          arrayToWork.splice(j,0,tempEl[0]);
         }
-        arrForWork = renderArray.slice(0);
-        ecurrentEl = arrForWork[j];
-        ecurrentEl.type = ElementStates.Default;
-        setRenderArray(arrForWork); 
+        setRenderArray(arrayToWork);
+        await sleep(SHORT_DELAY_IN_MS);
+        arrayToWork = arrayToWork.slice(0);
+        arrayToWork[j].type = ElementStates.Default;
+        arrayToWork[j+1].type = ElementStates.Default;
+        console.log(arrayToWork);
+        setRenderArray(arrayToWork);
       }
-      arrForWork = arrForWork.slice(0);
-      elToCompare.type = ElementStates.Modified;
+      arrayToWork = arrayToWork.slice(0);
+      arrayToWork[arrayToWork.length-1-i].type = ElementStates.Modified;
+      setRenderArray(arrayToWork);
+    }
+    setStart(false);
+  }
+
+  const sortByChoise = (arrayToSort: TArrElement[] ,positionForSortedEl: number, sortedElIndex: number, compareElIndex: number, asc: boolean) => {
+    const arrayToWork = arrayToSort.slice(0);
+    if(positionForSortedEl>=renderArray.length-1){
+      arrayToWork[renderArray.length-1].type = ElementStates.Modified;
+      setRenderArray(arrayToWork);
+      setStart(false);
+      return;
     }
 
+    if(compareElIndex===renderArray.length-1){
+      arrayToWork[compareElIndex].type = ElementStates.Default;
+      const movedArr = arrayToWork.splice(sortedElIndex,1);
+      const movedEl = movedArr[0];
+      movedEl.type = ElementStates.Modified;
+      arrayToWork.splice(positionForSortedEl, 0, movedEl);
+      positionForSortedEl++;
+      sortedElIndex = compareElIndex = positionForSortedEl;
+    }else if(positionForSortedEl===compareElIndex){
+      compareElIndex++;
+    }else{
+      arrayToWork[compareElIndex].type = ElementStates.Default;
+      compareElIndex++;
+    }
+
+    if(asc?
+      arrayToWork[sortedElIndex].value>arrayToWork[compareElIndex].value:
+      arrayToWork[sortedElIndex].value<arrayToWork[compareElIndex].value)
+      {
+      sortedElIndex = compareElIndex;
+    }
+
+    arrayToWork[positionForSortedEl].type = ElementStates.Changing;
+    arrayToWork[compareElIndex].type = ElementStates.Changing;
+    setRenderArray(arrayToWork);
+    setTimeout(() => sortByChoise(arrayToWork, positionForSortedEl, sortedElIndex, compareElIndex, asc), SHORT_DELAY_IN_MS);
   }
 
   const sortByAsc = () => {
-    //setStart(true);
+    setStart(true);
     if(sortType==='Выбор'){
-      sortByChoise(true);
+      sortByChoise(renderArray, 0, 0, 0, true);
+    }else if(sortType==='Пузырёк'){
+      sortByBubble(true);
     }
   }
 
   const sortByDesc = () => {
-    //setStart(true);
+    setStart(true);
     if(sortType==='Выбор'){
-      sortByChoise(false);
+      sortByChoise(renderArray, 0, 0, 0, false);
+    }else if(sortType==='Пузырёк'){
+      sortByBubble(false);
     }
   }
 
@@ -90,7 +134,7 @@ export const SortingPage: React.FC = () => {
         </div>
         <div className={styles.flex}>
           <Button text="По возрастанию" onClick={sortByAsc} isLoader={isStart} disabled={isStart} sorting={Direction.Ascending} />
-          <Button text="По возрастанию" onClick={sortByDesc} isLoader={isStart} disabled={isStart} sorting={Direction.Descending} />
+          <Button text="По убыванию" onClick={sortByDesc} isLoader={isStart} disabled={isStart} sorting={Direction.Descending} />
         </div>
         <div className={styles.flex}>
           <Button text="Новый массив" onClick={renderNewArr} isLoader={isStart} disabled={isStart} />
