@@ -18,16 +18,22 @@ export const QueuePage: React.FC = () => {
   const [inputedText, setText] = useState("");
 
   const addBtnClickHandler = () => {
-
+    queue.enqueue({value: inputedText, type: ElementStates.Default});
+    refreshArray();
   }
 
   const delBtnClickHandler = () => {
+    queue.dequeue();
+    refreshArray();
+  }
 
+  const refreshArray = () => {
+    const newArr = queue.elements().slice(0);
+    setRenderArray(newArr);
   }
 
   useEffect(()=>{
-    const newArr = queue.elements();
-    setRenderArray(newArr);
+    refreshArray();
   },[])
 
   return (
@@ -43,7 +49,7 @@ export const QueuePage: React.FC = () => {
       </div>
       <div className={styles.flex}>
         {
-          renderArray.map((element, index)=><Circle letter={element&&element.value||''} key={index} index={index} state={element&&element.type||ElementStates.Default} tail={'tail'} head={'null'}/>)
+          renderArray.map((element, index)=><Circle letter={(element&&element.value)||''} key={index} index={index} state={(element&&element.type)||ElementStates.Default} tail={queue.tail()===index?'tail':''} head={queue.head()===index?'head':''}/>)
         }
       </div>
     </SolutionLayout>
