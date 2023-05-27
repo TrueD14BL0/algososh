@@ -7,6 +7,7 @@ import { TArrStringElement } from "../../types/t-arr-element";
 import { Circle } from "../ui/circle/circle";
 import MyQueue from "./my-queue";
 import { ElementStates } from "../../types/element-states";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 export const QueuePage: React.FC = () => {
 
@@ -17,19 +18,38 @@ export const QueuePage: React.FC = () => {
   const [isStart, setStart] = useState(false);
   const [inputedText, setText] = useState("");
 
-  const addBtnClickHandler = () => {
-    queue.enqueue({value: inputedText, type: ElementStates.Default});
-    refreshArray();
-  }
-
-  const delBtnClickHandler = () => {
-    queue.dequeue();
-    refreshArray();
-  }
-
   const refreshArray = () => {
     const newArr = queue.elements().slice(0);
     setRenderArray(newArr);
+  }
+
+  const addBtnClickHandler = () => {
+    const newArr = queue.elements().slice(0);
+    if(queue.tail()<newArr.length-1&&queue.head()<newArr.length-1){
+      let tail = queue.tail();
+      if(queue.tail()===-1&&queue.head()>-1){
+        tail = queue.head();
+      }
+      newArr.splice(tail+1,1, {value: '', type: ElementStates.Changing});
+    }
+    setRenderArray(newArr);
+    setTimeout(()=>{
+      queue.enqueue({value: inputedText, type: ElementStates.Default});
+      refreshArray();
+    }, SHORT_DELAY_IN_MS);
+  }
+
+  const delBtnClickHandler = () => {
+    const newArr = queue.elements().slice(0);
+    if(!newArr[queue.head()]){
+      return;
+    }
+    newArr.splice(queue.head(),1, {value: newArr[queue.head()]?.value||'', type: ElementStates.Changing});
+    setRenderArray(newArr);
+    setTimeout(()=>{
+      queue.dequeue();
+      refreshArray();
+    }, SHORT_DELAY_IN_MS);
   }
 
   useEffect(()=>{
@@ -44,7 +64,11 @@ export const QueuePage: React.FC = () => {
           <Button text="Добавить" isLoader={isStart} disabled={isStart||!inputedText} onClick={addBtnClickHandler} />
           <Button text="Удалить" isLoader={isStart} disabled={isStart} onClick={delBtnClickHandler} />
         </div>
-        <Button text="Очистить" isLoader={isStart} disabled={isStart} onClick={()=>{//setStart(true); stack.clear(); refreshArray();
+        <Button text="Очистить" isLoader={isStart} disabled={isStart} onClick={()=>{
+          setStart(true);
+          queue.clear();
+          refreshArray();
+          setStart(false);
         }}/>
       </div>
       <div className={styles.flex}>

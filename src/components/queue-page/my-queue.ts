@@ -12,18 +12,19 @@ export default class MyQueue<T> {
     return this.queueArr;
   }
 
-  public enqueue = (item: T) => {
+  public enqueue = (item: T): boolean => {
     if(this.tailIndex=== -1 && this.headIndex!==-1 && this.headIndex+1<=this.queueArr.length-1){
       this.tailIndex = this.headIndex;
     }
     if (this.tailIndex===this.queueArr.length-1||this.headIndex+1>this.queueArr.length-1){
-      return
+      return false;
     }
     this.tailIndex++;
     this.queueArr.splice(this.tailIndex, 1, item);
     if(this.headIndex===-1||!this.queueArr[this.headIndex]){
       this.headIndex++;
     }
+    return true;
   }
 
   public dequeue = (): T|null => {
