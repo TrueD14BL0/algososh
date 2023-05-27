@@ -59,7 +59,7 @@ export const QueuePage: React.FC = () => {
   return (
     <SolutionLayout title="Очередь">
       <div className={styles.flex}>
-      <Input isLimitText maxLength={4} value={inputedText} onChange={e => setText(e.currentTarget.value)} placeholder="Введите значение"/>
+        <Input isLimitText maxLength={4} value={inputedText} onChange={e => setText(e.currentTarget.value)} placeholder="Введите значение"/>
         <div className={styles.flex}>
           <Button text="Добавить" isLoader={isStart} disabled={isStart||!inputedText} onClick={addBtnClickHandler} />
           <Button text="Удалить" isLoader={isStart} disabled={isStart} onClick={delBtnClickHandler} />
