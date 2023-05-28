@@ -9,11 +9,13 @@ import { Direction } from "../../types/direction";
 import { ElementStates } from "../../types/element-states";
 import { sleep } from "../../utils/sleep";
 import { TArrNumberElement } from "../../types/t-arr-element";
+import { SortingPageElements } from "../../constants/element-names";
 
 export const SortingPage: React.FC = () => {
 
   const [renderArray, setRenderArray] = useState<TArrNumberElement[]>([]);
   const [isStart, setStart] = useState(false);
+  const [loaderBtn, setLoaderBtn] = useState('');
   const [sortType, setSortType] = useState('Выбор');
   const randomArr = (): TArrNumberElement[] => {
     const qtyEl = Math.floor(Math.random() * 14+3);
@@ -34,7 +36,9 @@ export const SortingPage: React.FC = () => {
 
   const renderNewArr = () => {
     setStart(true);
+    setLoaderBtn(SortingPageElements.NEW);
     setRenderArray(randomArr);
+    setLoaderBtn('');
     setStart(false);
   }
 
@@ -62,6 +66,7 @@ export const SortingPage: React.FC = () => {
       arrayToWork[arrayToWork.length-1-i].type = ElementStates.Modified;
       setRenderArray(arrayToWork);
     }
+    setLoaderBtn('');
     setStart(false);
   }
 
@@ -70,6 +75,7 @@ export const SortingPage: React.FC = () => {
     if(positionForSortedEl>=renderArray.length-1){
       arrayToWork[renderArray.length-1].type = ElementStates.Modified;
       setRenderArray(arrayToWork);
+      setLoaderBtn('');
       setStart(false);
       return;
     }
@@ -104,6 +110,7 @@ export const SortingPage: React.FC = () => {
 
   const sortByAsc = () => {
     setStart(true);
+    setLoaderBtn(SortingPageElements.ASC);
     if(sortType==='Выбор'){
       sortByChoise(renderArray, 0, 0, 0, true);
     }else if(sortType==='Пузырёк'){
@@ -113,6 +120,7 @@ export const SortingPage: React.FC = () => {
 
   const sortByDesc = () => {
     setStart(true);
+    setLoaderBtn(SortingPageElements.DESC);
     if(sortType==='Выбор'){
       sortByChoise(renderArray, 0, 0, 0, false);
     }else if(sortType==='Пузырёк'){
@@ -123,19 +131,19 @@ export const SortingPage: React.FC = () => {
   return (
     <SolutionLayout title="Сортировка массива">
       <div className={styles.flex}>
-        <div className={styles.flex}>
+        <div className={`${styles.flex} ${styles.radioGroup}`}>
           <RadioInput name="type" label="Выбор" checked={sortType==='Выбор'} onChange={()=>setSortType('Выбор')} disabled={isStart} />
           <RadioInput name="type" label="Пузырёк" checked={sortType==='Пузырёк'} onChange={()=>setSortType('Пузырёк')} disabled={isStart} />
         </div>
-        <div className={styles.flex}>
-          <Button text="По возрастанию" onClick={sortByAsc} isLoader={isStart} disabled={isStart} sorting={Direction.Ascending} />
-          <Button text="По убыванию" onClick={sortByDesc} isLoader={isStart} disabled={isStart} sorting={Direction.Descending} />
+        <div className={`${styles.flex} ${styles.btnGroup}`}>
+          <Button text="По возрастанию" onClick={sortByAsc} isLoader={loaderBtn===SortingPageElements.ASC} disabled={isStart} sorting={Direction.Ascending} />
+          <Button text="По убыванию" onClick={sortByDesc} isLoader={loaderBtn===SortingPageElements.DESC} disabled={isStart} sorting={Direction.Descending} />
         </div>
         <div className={styles.flex}>
-          <Button text="Новый массив" onClick={renderNewArr} isLoader={isStart} disabled={isStart} />
+          <Button text="Новый массив" onClick={renderNewArr} isLoader={loaderBtn===SortingPageElements.NEW} disabled={isStart} extraClass="ml-12" />
         </div>
       </div>
-      <div className={styles.flex}>
+      <div className={`${styles.flex} ${styles.container}`}>
         {
           renderArray.map((element, index)=><Column index={element.value} key={index} state={element.type} />)
         }

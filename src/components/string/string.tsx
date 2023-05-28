@@ -62,8 +62,10 @@ export const StringComponent: React.FC = () => {
 
   return (
     <SolutionLayout title="Строка">
-      <Input isLimitText maxLength={11} value={inputedText} onChange={e => setText(e.currentTarget.value)}/>
-      <Button text="Развернуть" onClick={startAlgorithm} isLoader={isStart} disabled={isStart||inputedText.length===0}/>
+      <div  className={styles.head}>
+        <Input isLimitText disabled={isStart} maxLength={11} value={inputedText} onChange={e => setText(e.currentTarget.value)}/>
+        <Button text="Развернуть" onClick={startAlgorithm} isLoader={isStart} disabled={isStart||inputedText.length===0}/>
+      </div>
       <div className={styles.flex}>
         {
           renderArray.map((element, index)=><Circle letter={element.value} key={index} state={element.type}/>)

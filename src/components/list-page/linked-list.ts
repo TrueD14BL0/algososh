@@ -11,22 +11,22 @@ export default class LinkedList<T> {
     this.head = null;
   }
 
-  public prepend = (item: T) => {
+  public prepend = (item: T): boolean => {
     if(this.length >= this.maxLength){
-      return;
+      return false;
     }
     const newHead = new LinkedListNode(item, this.head);
     this.head = newHead;
     this.length++;
+    return true;
   }
 
-  public append = (item: T) => {
+  public append = (item: T): boolean => {
     if(this.length >= this.maxLength){
-      return;
+      return false;
     }
     if(!this.head){
-      this.prepend(item);
-      return;
+      return this.prepend(item);
     }
     let currItem: LinkedListNode<T>|null = this.head;
     while (currItem&&currItem.getNext()) {
@@ -34,22 +34,25 @@ export default class LinkedList<T> {
     }
     if(currItem){
       currItem.setNext(new LinkedListNode(item, null));
-      this.length++;
     }
+    this.length++;
+    return true;
   }
 
-  public addByIndex = (item: T, index: number) => {
-    if(!this.head){
-      this.prepend(item);
+  public addByIndex = (item: T, index: number): boolean => {
+    if(!this.head||index===0){
+      return this.prepend(item);
     }
     let curr = this.head;
     let currIndex = 0;
-    while(curr!.getNext()&&currIndex!==index){
-      curr = curr!.getNext();
+    while(curr!.getNext()&&currIndex!==index-1){
+      curr = curr!.getNext() as LinkedListNode<T>;
       currIndex++;
     }
     const newEl = new LinkedListNode(item, curr!.getNext());
     curr!.setNext(newEl);
+    this.length++;
+    return true;
   }
 
   public deleteByIndex = (index: number) => {
@@ -66,7 +69,7 @@ export default class LinkedList<T> {
     }
     let curr: LinkedListNode<T> = this.head;
     let currIndex = 0;
-    while(currIndex<=index-1){
+    while(currIndex<index-1){
       if(!curr.getNext()){
         this.length = currIndex+1;
         return;
@@ -76,6 +79,7 @@ export default class LinkedList<T> {
     }
     const nextNode = curr.getNext()?.getNext()||null;
     curr.setNext(nextNode);
+    this.length--;
   }
 
   public deleteHead = () => {
@@ -110,12 +114,17 @@ export default class LinkedList<T> {
     const arrForReturn: Array<T> = [];
 
     let curr: LinkedListNode<T> | null = this.head;
-    do {
-      arrForReturn.push(curr!.getValue());
+    arrForReturn.push(curr!.getValue());
+    while (curr?.getNext()) {
       curr=curr!.getNext();
-    } while (curr!.getNext());
-
+      arrForReturn.push(curr!.getValue());
+    }
+    
     return arrForReturn;
+  }
+
+  public getLength = (): number => {
+    return this.length;
   }
 
 }

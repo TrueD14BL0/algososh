@@ -1,3 +1,4 @@
+import { ReactElement } from "react"
 import { ElementStates } from "./element-states"
 
 export type TArrNumberElement ={
@@ -8,4 +9,11 @@ export type TArrNumberElement ={
 export type TArrStringElement ={
   value: string,
   type: ElementStates,
+}
+
+export type TListArrStringElement = {
+  value: string|null,
+  type: ElementStates,
+  head: string|ReactElement|null,
+  tail: string|ReactElement|null,
 }

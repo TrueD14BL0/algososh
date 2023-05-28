@@ -8,6 +8,7 @@ import { Circle } from "../ui/circle/circle";
 import MyQueue from "./my-queue";
 import { ElementStates } from "../../types/element-states";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { QueuePageElements } from "../../constants/element-names";
 
 export const QueuePage: React.FC = () => {
 
@@ -17,13 +18,18 @@ export const QueuePage: React.FC = () => {
   const [queue, ] = useState(new MyQueue<TArrStringElement>(MAX_QUEUE_LENGHT));
   const [isStart, setStart] = useState(false);
   const [inputedText, setText] = useState("");
+  const [loaderBtn, setLoaderBtn] = useState('');
 
   const refreshArray = () => {
     const newArr = queue.elements().slice(0);
     setRenderArray(newArr);
+    setLoaderBtn('');
+    setStart(false);
   }
 
   const addBtnClickHandler = () => {
+    setStart(true);
+    setLoaderBtn(QueuePageElements.ADD);
     const newArr = queue.elements().slice(0);
     if(queue.tail()<newArr.length-1&&queue.head()<newArr.length-1){
       let tail = queue.tail();
@@ -44,6 +50,8 @@ export const QueuePage: React.FC = () => {
     if(!newArr[queue.head()]){
       return;
     }
+    setStart(true);
+    setLoaderBtn(QueuePageElements.DEL);
     newArr.splice(queue.head(),1, {value: newArr[queue.head()]?.value||'', type: ElementStates.Changing});
     setRenderArray(newArr);
     setTimeout(()=>{
@@ -58,20 +66,22 @@ export const QueuePage: React.FC = () => {
 
   return (
     <SolutionLayout title="Очередь">
-      <div className={styles.flex}>
-        <Input isLimitText maxLength={4} value={inputedText} onChange={e => setText(e.currentTarget.value)} placeholder="Введите значение"/>
-        <div className={styles.flex}>
-          <Button text="Добавить" isLoader={isStart} disabled={isStart||!inputedText} onClick={addBtnClickHandler} />
-          <Button text="Удалить" isLoader={isStart} disabled={isStart} onClick={delBtnClickHandler} />
+      <div className={`${styles.flex} ${styles.head}`}>
+        <div className={`${styles.flex} ${styles.firstGrp}`}>
+          <Input isLimitText maxLength={4} value={inputedText} onChange={e => setText(e.currentTarget.value)} placeholder="Введите значение"/>
+          <Button text="Добавить" isLoader={loaderBtn===QueuePageElements.ADD} disabled={isStart||!inputedText} onClick={addBtnClickHandler} />
+          <Button text="Удалить" isLoader={loaderBtn===QueuePageElements.DEL} disabled={isStart||queue.head()===-1||queue.tail()===-1} onClick={delBtnClickHandler} />
         </div>
-        <Button text="Очистить" isLoader={isStart} disabled={isStart} onClick={()=>{
+        <Button text="Очистить" isLoader={loaderBtn===QueuePageElements.CLR} disabled={isStart||queue.head()===-1} onClick={()=>{
           setStart(true);
+          setLoaderBtn(QueuePageElements.CLR);
           queue.clear();
           refreshArray();
+          setLoaderBtn('');
           setStart(false);
         }}/>
       </div>
-      <div className={styles.flex}>
+      <div className={`${styles.flex} ${styles.container}`}>
         {
           renderArray.map((element, index)=><Circle letter={(element&&element.value)||''} key={index} index={index} state={(element&&element.type)||ElementStates.Default} tail={queue.tail()===index?'tail':''} head={queue.head()===index?'head':''}/>)
         }
