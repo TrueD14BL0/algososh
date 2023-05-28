@@ -36,11 +36,12 @@ export const StringComponent: React.FC = () => {
     swapElements(tempArr, start, end);
     tempArr[++start].type = ElementStates.Changing;
     tempArr[--end].type = ElementStates.Changing;
-    if(start!==end){
+    if(start!==end&&start<end){
       setRenderArray(tempArr);
       setTimeout(()=>{sortArr(tempArr, start, end)}, DELAY_IN_MS);
     }else{
       tempArr[end].type = ElementStates.Modified;
+      tempArr[start].type = ElementStates.Modified;
       setRenderArray(tempArr);
       setStart(false);
     }

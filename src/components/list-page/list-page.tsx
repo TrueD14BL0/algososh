@@ -62,6 +62,8 @@ export const ListPage: React.FC = () => {
       setRenderArray(arrForRender);
       setStart(false);
       setLoaderBtn('');
+      setText('');
+      setIndex('');
     },SHORT_DELAY_IN_MS);
   }
 
@@ -76,6 +78,7 @@ export const ListPage: React.FC = () => {
     if(!success){
       setStart(false);
       setLoaderBtn('');
+      setText('');
       return;
     }
     const arrForRender: TListArrStringElement[] = arrFromList.map(element=>{return {
@@ -107,6 +110,7 @@ export const ListPage: React.FC = () => {
         setRenderArray(arrForRender);
         setLoaderBtn('');
         setStart(false);
+        setText('');
       }, SHORT_DELAY_IN_MS);
     }, SHORT_DELAY_IN_MS);
   }
@@ -122,6 +126,7 @@ export const ListPage: React.FC = () => {
     if(!success){
       setStart(false);
       setLoaderBtn('');
+      setText('');
       return;
     }
     const arrForRender: TListArrStringElement[] = arrFromList.map(element=>{return {
@@ -153,6 +158,7 @@ export const ListPage: React.FC = () => {
         setRenderArray(arrForRender);
         setStart(false);
         setLoaderBtn('');
+        setText('');
       }, SHORT_DELAY_IN_MS);
     }, SHORT_DELAY_IN_MS);
   }
@@ -184,6 +190,8 @@ export const ListPage: React.FC = () => {
     if(!success){
       const arrForRender: TListArrStringElement[] = getArrFromList();
       setRenderArray(arrForRender);
+      setText('');
+      setIndex('');
       return;
     }
     recurseAnimateAdding(indexForAdding);
@@ -258,8 +266,18 @@ export const ListPage: React.FC = () => {
         </div>
         <div className={`${styles.head} ${styles.control2}`}>
           <Input isLimitText type='number' maxLength={1} max={list.getLength()-1>=0?list.getLength()-1:0} min={0} value={inputedIndex} onChange={e => setIndex(e.currentTarget.value)} placeholder="Введите индекс"/>
-          <Button text="Добавить по индексу" isLoader={loaderBtn===ListPageElements.ADD_IND} disabled={isStart||!(inputedIndex&&inputedText!=='')||!list.getLength()} onClick={addIndexBtnClickHandler} />
-          <Button text="Удалить по индексу" isLoader={loaderBtn===ListPageElements.DEL_IND} disabled={isStart||!list.getLength()||!inputedIndex} onClick={delIndexBtnClickHandler} />
+          <Button text="Добавить по индексу" isLoader={loaderBtn===ListPageElements.ADD_IND} disabled={isStart||
+            !(inputedIndex&&inputedText!=='')||
+            !list.getLength()||
+            parseInt(inputedIndex)<0||
+            parseInt(inputedIndex)>list.getLength()-1
+          } onClick={addIndexBtnClickHandler} />
+          <Button text="Удалить по индексу" isLoader={loaderBtn===ListPageElements.DEL_IND} disabled={isStart||
+            !list.getLength()||
+            !inputedIndex||
+            parseInt(inputedIndex)<0||
+            parseInt(inputedIndex)>list.getLength()-1
+          } onClick={delIndexBtnClickHandler} />
         </div>
       </div>
       <div className={`${styles.flex}`}>

@@ -41,6 +41,7 @@ export const QueuePage: React.FC = () => {
     setRenderArray(newArr);
     setTimeout(()=>{
       queue.enqueue({value: inputedText, type: ElementStates.Default});
+      setText('');
       refreshArray();
     }, SHORT_DELAY_IN_MS);
   }
