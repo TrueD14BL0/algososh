@@ -1,0 +1,16 @@
+.flex {
+  margin-top: 120px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  justify-content: center;
+}
+
+.head {
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap:12px;
+  width: 567px;
+}

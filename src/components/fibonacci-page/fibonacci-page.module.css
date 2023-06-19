@@ -1,0 +1,18 @@
+.flex {
+  margin: 48px auto 0;
+  max-width: 944px;
+  display: flex;
+  flex-direction: row;
+  gap: 78px 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.head {
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap:12px;
+  width: 567px;
+}

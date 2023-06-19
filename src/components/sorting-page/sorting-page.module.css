@@ -1,0 +1,22 @@
+.flex {
+  display: flex;
+  flex-direction: row;
+  gap: 52px;
+  justify-content: center;
+  align-items: center;
+}
+
+.container{
+  margin-top: 48px;
+  height: 348px;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.btnGroup{
+  gap:12px;
+}
+
+.radioGroup{
+  gap:40px;
+}
