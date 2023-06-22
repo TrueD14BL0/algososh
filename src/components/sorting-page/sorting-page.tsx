@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from './sorting-page.module.css';
 import { Column } from "../ui/column/column";
@@ -10,6 +10,41 @@ import { ElementStates } from "../../types/element-states";
 import { sleep } from "../../utils/sleep";
 import { TArrNumberElement } from "../../types/t-arr-element";
 import { SortingPageElements } from "../../constants/element-names";
+
+export const sortByBubble = async (arr: TArrNumberElement[], asc: boolean, renderFunc?: Dispatch<SetStateAction<TArrNumberElement[]>>) => {
+  if(arr.length===0){
+    return [];
+  }
+  let arrayToWork = arr.slice(0);
+  if(arr.length===1){
+    arrayToWork[0].type = ElementStates.Modified;
+    renderFunc&&renderFunc(arrayToWork);
+    return arrayToWork;
+  }
+  for (let i = 0; i < arrayToWork.length; i++) {
+    for (let j = 0; j < arrayToWork.length - 1 - i; j++) {
+      arrayToWork = arrayToWork.slice(0);
+      arrayToWork[j].type = ElementStates.Changing;
+      arrayToWork[j+1].type = ElementStates.Changing;
+      if (asc?
+        arrayToWork[j].value > arrayToWork[j + 1].value:
+        arrayToWork[j].value < arrayToWork[j + 1].value) {
+        const tempEl = arrayToWork.splice(j + 1,1);
+        arrayToWork.splice(j,0,tempEl[0]);
+      }
+      renderFunc&&renderFunc(arrayToWork);
+      await sleep(SHORT_DELAY_IN_MS);
+      arrayToWork = arrayToWork.slice(0);
+      arrayToWork[j].type = ElementStates.Default;
+      arrayToWork[j+1].type = ElementStates.Default;
+      renderFunc&&renderFunc(arrayToWork);
+    }
+    arrayToWork = arrayToWork.slice(0);
+    arrayToWork[arrayToWork.length-1-i].type = ElementStates.Modified;
+    renderFunc&&renderFunc(arrayToWork);
+  }
+  return arrayToWork;
+}
 
 export const SortingPage: React.FC = () => {
 
@@ -38,34 +73,6 @@ export const SortingPage: React.FC = () => {
     setStart(true);
     setLoaderBtn(SortingPageElements.NEW);
     setRenderArray(randomArr);
-    setLoaderBtn('');
-    setStart(false);
-  }
-
-  const sortByBubble = async (asc: boolean) => {
-    let arrayToWork = renderArray.slice(0);
-    for (let i = 0; i < arrayToWork.length; i++) {
-      for (let j = 0; j < arrayToWork.length - 1 - i; j++) {
-        arrayToWork = arrayToWork.slice(0);
-        arrayToWork[j].type = ElementStates.Changing;
-        arrayToWork[j+1].type = ElementStates.Changing;
-        if (asc?
-          arrayToWork[j].value > arrayToWork[j + 1].value:
-          arrayToWork[j].value < arrayToWork[j + 1].value) {
-          const tempEl = arrayToWork.splice(j + 1,1);
-          arrayToWork.splice(j,0,tempEl[0]);
-        }
-        setRenderArray(arrayToWork);
-        await sleep(SHORT_DELAY_IN_MS);
-        arrayToWork = arrayToWork.slice(0);
-        arrayToWork[j].type = ElementStates.Default;
-        arrayToWork[j+1].type = ElementStates.Default;
-        setRenderArray(arrayToWork);
-      }
-      arrayToWork = arrayToWork.slice(0);
-      arrayToWork[arrayToWork.length-1-i].type = ElementStates.Modified;
-      setRenderArray(arrayToWork);
-    }
     setLoaderBtn('');
     setStart(false);
   }
@@ -108,23 +115,27 @@ export const SortingPage: React.FC = () => {
     setTimeout(() => sortByChoise(arrayToWork, positionForSortedEl, sortedElIndex, compareElIndex, asc), SHORT_DELAY_IN_MS);
   }
 
-  const sortByAsc = () => {
+  const sortByAsc = async () => {
     setStart(true);
     setLoaderBtn(SortingPageElements.ASC);
     if(sortType==='Выбор'){
       sortByChoise(renderArray, 0, 0, 0, true);
     }else if(sortType==='Пузырёк'){
-      sortByBubble(true);
+      await sortByBubble(renderArray, true, setRenderArray);
+      setLoaderBtn('');
+      setStart(false);
     }
   }
 
-  const sortByDesc = () => {
+  const sortByDesc = async () => {
     setStart(true);
     setLoaderBtn(SortingPageElements.DESC);
     if(sortType==='Выбор'){
       sortByChoise(renderArray, 0, 0, 0, false);
     }else if(sortType==='Пузырёк'){
-      sortByBubble(false);
+      await sortByBubble(renderArray, false, setRenderArray);
+      setLoaderBtn('');
+      setStart(false);
     }
   }
 
