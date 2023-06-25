@@ -11,6 +11,11 @@ import { sleep } from "../../utils/sleep";
 import { TArrNumberElement } from "../../types/t-arr-element";
 import { SortingPageElements } from "../../constants/element-names";
 
+const swapArrElements = (arrayToWork: TArrNumberElement[], indexOne: number, indexTwo: number) => {
+  const tempEl = arrayToWork.splice(indexTwo,1);
+  arrayToWork.splice(indexOne,0,tempEl[0]);
+}
+
 export const sortByBubble = async (arr: TArrNumberElement[], asc: boolean, renderFunc?: Dispatch<SetStateAction<TArrNumberElement[]>>) => {
   if(arr.length===0){
     return [];
@@ -29,8 +34,7 @@ export const sortByBubble = async (arr: TArrNumberElement[], asc: boolean, rende
       if (asc?
         arrayToWork[j].value > arrayToWork[j + 1].value:
         arrayToWork[j].value < arrayToWork[j + 1].value) {
-        const tempEl = arrayToWork.splice(j + 1,1);
-        arrayToWork.splice(j,0,tempEl[0]);
+        swapArrElements(arrayToWork, j + 1, j);
       }
       renderFunc&&renderFunc(arrayToWork);
       await sleep(SHORT_DELAY_IN_MS);
@@ -42,6 +46,44 @@ export const sortByBubble = async (arr: TArrNumberElement[], asc: boolean, rende
     arrayToWork = arrayToWork.slice(0);
     arrayToWork[arrayToWork.length-1-i].type = ElementStates.Modified;
     renderFunc&&renderFunc(arrayToWork);
+  }
+  return arrayToWork;
+}
+
+export const sortByChoise = async (arrayToSort: TArrNumberElement[], asc: boolean, renderFunc?: Dispatch<SetStateAction<TArrNumberElement[]>>) => {
+  if(arrayToSort.length===0){
+    return [];
+  }
+  let arrayToWork = arrayToSort.slice(0);
+  if(arrayToWork.length===1){
+    arrayToWork[0].type = ElementStates.Modified;
+    renderFunc&&renderFunc(arrayToWork);
+    return arrayToWork;
+  }
+  for (let i = 0; i < arrayToSort.length; i++) {
+    arrayToWork = arrayToWork.slice(0);
+    let currentChosenIndex = i;
+    arrayToWork[i].type = ElementStates.Changing;
+    for (let j = i; j < arrayToSort.length; j++) {
+      arrayToWork = arrayToWork.slice(0);
+      arrayToWork[j].type = ElementStates.Changing;
+      renderFunc&&renderFunc(arrayToWork);
+      await sleep(SHORT_DELAY_IN_MS);
+      arrayToWork = arrayToWork.slice(0);
+      if(i!==j){
+        arrayToWork[j].type = ElementStates.Default;
+      }
+      if(asc?
+          arrayToWork[currentChosenIndex].value>arrayToWork[j].value:
+          arrayToWork[currentChosenIndex].value<arrayToWork[j].value){
+        currentChosenIndex = j;
+      }
+    }
+    arrayToWork[i].type = ElementStates.Default;
+    swapArrElements(arrayToWork, i, currentChosenIndex);
+    arrayToWork[i].type = ElementStates.Modified;
+    renderFunc&&renderFunc(arrayToWork);
+    await sleep(SHORT_DELAY_IN_MS);
   }
   return arrayToWork;
 }
@@ -77,49 +119,13 @@ export const SortingPage: React.FC = () => {
     setStart(false);
   }
 
-  const sortByChoise = (arrayToSort: TArrNumberElement[] ,positionForSortedEl: number, sortedElIndex: number, compareElIndex: number, asc: boolean) => {
-    const arrayToWork = arrayToSort.slice(0);
-    if(positionForSortedEl>=renderArray.length-1){
-      arrayToWork[renderArray.length-1].type = ElementStates.Modified;
-      setRenderArray(arrayToWork);
-      setLoaderBtn('');
-      setStart(false);
-      return;
-    }
-
-    if(compareElIndex===renderArray.length-1){
-      arrayToWork[compareElIndex].type = ElementStates.Default;
-      const movedArr = arrayToWork.splice(sortedElIndex,1);
-      const movedEl = movedArr[0];
-      movedEl.type = ElementStates.Modified;
-      arrayToWork.splice(positionForSortedEl, 0, movedEl);
-      positionForSortedEl++;
-      sortedElIndex = compareElIndex = positionForSortedEl;
-    }else if(positionForSortedEl===compareElIndex){
-      compareElIndex++;
-    }else{
-      arrayToWork[compareElIndex].type = ElementStates.Default;
-      compareElIndex++;
-    }
-
-    if(asc?
-      arrayToWork[sortedElIndex].value>arrayToWork[compareElIndex].value:
-      arrayToWork[sortedElIndex].value<arrayToWork[compareElIndex].value)
-      {
-      sortedElIndex = compareElIndex;
-    }
-
-    arrayToWork[positionForSortedEl].type = ElementStates.Changing;
-    arrayToWork[compareElIndex].type = ElementStates.Changing;
-    setRenderArray(arrayToWork);
-    setTimeout(() => sortByChoise(arrayToWork, positionForSortedEl, sortedElIndex, compareElIndex, asc), SHORT_DELAY_IN_MS);
-  }
-
   const sortByAsc = async () => {
     setStart(true);
     setLoaderBtn(SortingPageElements.ASC);
     if(sortType==='Выбор'){
-      sortByChoise(renderArray, 0, 0, 0, true);
+      const newArr = await sortByChoise(renderArray, true, setRenderArray);
+      setLoaderBtn('');
+      setStart(false);
     }else if(sortType==='Пузырёк'){
       await sortByBubble(renderArray, true, setRenderArray);
       setLoaderBtn('');
@@ -131,7 +137,9 @@ export const SortingPage: React.FC = () => {
     setStart(true);
     setLoaderBtn(SortingPageElements.DESC);
     if(sortType==='Выбор'){
-      sortByChoise(renderArray, 0, 0, 0, false);
+      await sortByChoise(renderArray, false, setRenderArray);
+      setLoaderBtn('');
+      setStart(false);
     }else if(sortType==='Пузырёк'){
       await sortByBubble(renderArray, false, setRenderArray);
       setLoaderBtn('');

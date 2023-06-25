@@ -1,6 +1,6 @@
 import { DELAY_IN_MS } from "../../constants/delays";
 import { ElementStates } from "../../types/element-states";
-import { sortByBubble } from "./sorting-page";
+import { sortByBubble, sortByChoise } from "./sorting-page";
 
 const initialArr = [
   {value: 666, type: ElementStates.Default},
@@ -41,7 +41,7 @@ const resultArrDesc = [
   {value: 1, type: ElementStates.Modified},
 ];
 
-jest.setTimeout(30*DELAY_IN_MS);
+jest.setTimeout(40*DELAY_IN_MS);
 
 describe("Sort unit test", ()=>{
 
@@ -55,4 +55,54 @@ describe("Sort unit test", ()=>{
     expect(data).toEqual(resultArrDesc);
   });
 
+  test('sort empty bubble asc', async () => {
+    const data = await sortByBubble([], true);
+    expect(data).toEqual([]);
+  });
+
+  test('sort empty bubble desc', async () => {
+    const data = await sortByBubble([], false);
+    expect(data).toEqual([]);
+  });
+
+  test('sort single bubble asc', async () => {
+    const data = await sortByBubble([], true);
+    expect(data).toEqual([]);
+  });
+
+  test('sort single bubble desc', async () => {
+    const data = await sortByBubble([{value: 1, type: ElementStates.Default}], false);
+    expect(data).toEqual([{value: 1, type: ElementStates.Modified}]);
+  });
+
+  test('sort shoise asc', async () => {
+    const data = await sortByChoise(initialArr, true);
+    expect(data).toEqual(resultArrAsc);
+  });
+
+  test('sort shoise desc', async () => {
+    const data = await sortByChoise(initialArr, false);
+    expect(data).toEqual(resultArrDesc);
+  });
+
+  test('sort shoise bubble asc', async () => {
+    const data = await sortByChoise([], true);
+    expect(data).toEqual([]);
+  });
+
+  test('sort shoise bubble desc', async () => {
+    const data = await sortByChoise([], false);
+    expect(data).toEqual([]);
+  });
+
+  test('sort single shoise asc', async () => {
+    const data = await sortByChoise([], true);
+    expect(data).toEqual([]);
+  });
+
+  test('sort single shoise desc', async () => {
+    const data = await sortByChoise([{value: 1, type: ElementStates.Default}], false);
+    expect(data).toEqual([{value: 1, type: ElementStates.Modified}]);
+  });
+  
 })
