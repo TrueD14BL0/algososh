@@ -56,7 +56,7 @@ export default class MyQueue<T> {
   }
 
   public isEmpty = (): boolean => {
-    return this.queueArr.find(el=>el!=null)!==undefined;
+    return this.queueArr.find(el=>el!=null)===undefined;
   }
 
 }
