@@ -54,7 +54,7 @@ const getResultArr = (step) => {
   }
 }
 
-describe('app works correctly with routes', function() {
+describe('page open correctly', function() {
   beforeEach(function() {
     cy.visit('/recursion');
   });

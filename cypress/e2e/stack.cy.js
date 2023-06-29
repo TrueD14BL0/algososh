@@ -1,7 +1,7 @@
 import { SHORT_DELAY_IN_MS } from "../../src/constants/delays";
 import { BORDER_CHANGING, BORDER_DEFAULT, CIRCLE_BORDER_SELECTOR, CIRCLE_ELEMENT_SELECTOR, CIRCLE_HEAD_SELECTOR, CIRCLE_INDEX_SELECTOR, CIRCLE_LETTER_SELECTOR, LOADER_SELECTOR } from "../constants/cy-constants";
 
-describe('app works correctly with routes', function() {
+describe('page open correctly', function() {
   beforeEach(function() {
     cy.visit('/stack');
   });
