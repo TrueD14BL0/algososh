@@ -1,5 +1,5 @@
 import styles from "./string.module.css"
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
@@ -7,6 +7,48 @@ import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import { DELAY_IN_MS } from "../../constants/delays";
 import { TArrStringElement } from "../../types/t-arr-element";
+import { sleep } from "../../utils/sleep";
+
+const swapElements = (arrForWork: TArrStringElement[], start: number, end: number) => {
+  const tempItem = arrForWork[start];
+  arrForWork[start] = arrForWork[end];
+  arrForWork[start].type = ElementStates.Modified;
+  arrForWork[end] = tempItem;
+  arrForWork[end].type = ElementStates.Modified;
+}
+
+export const sortArr = async (arrForWork: TArrStringElement[], renderFunc?: Dispatch<SetStateAction<TArrStringElement[]>>) => {
+  await sleep(DELAY_IN_MS);
+  let tempArr = arrForWork.slice(0);
+  if(!tempArr.length){
+    return tempArr;
+  };
+
+  let start = 0;
+  let end = tempArr.length-1;
+
+  while (start<end) {
+    tempArr = tempArr.slice(0);
+    tempArr[start].type = ElementStates.Changing;
+    tempArr[end].type = ElementStates.Changing;
+    renderFunc&&renderFunc(tempArr);
+    await sleep(DELAY_IN_MS);
+    tempArr = tempArr.slice(0);
+    swapElements(tempArr, start, end);
+    tempArr[start++].type = ElementStates.Modified;
+    tempArr[end--].type = ElementStates.Modified;
+    renderFunc&&renderFunc(tempArr);
+  }
+  if(start===end){
+    tempArr = tempArr.slice(0);
+    tempArr[start].type = ElementStates.Changing;
+    renderFunc&&renderFunc(tempArr);
+    await sleep(DELAY_IN_MS);
+    tempArr = tempArr.slice(0);
+    tempArr[start].type = ElementStates.Modified;
+  }
+  return tempArr;
+}
 
 export const StringComponent: React.FC = () => {
 
@@ -23,42 +65,12 @@ export const StringComponent: React.FC = () => {
     return arrToWork;
   }
 
-  const swapElements = (arrForWork: TArrStringElement[], start: number, end: number) => {
-    const tempItem = arrForWork[start];
-    arrForWork[start] = arrForWork[end];
-    arrForWork[start].type = ElementStates.Modified;
-    arrForWork[end] = tempItem;
-    arrForWork[end].type = ElementStates.Modified;
-  }
-
-  const sortArr = (arrForWork: TArrStringElement[], start: number, end: number) => {
-    const tempArr = arrForWork.slice(0);
-    swapElements(tempArr, start, end);
-    tempArr[++start].type = ElementStates.Changing;
-    tempArr[--end].type = ElementStates.Changing;
-    if(start!==end&&start<end){
-      setRenderArray(tempArr);
-      setTimeout(()=>{sortArr(tempArr, start, end)}, DELAY_IN_MS);
-    }else{
-      tempArr[end].type = ElementStates.Modified;
-      tempArr[start].type = ElementStates.Modified;
-      setRenderArray(tempArr);
-      setStart(false);
-    }
-  }
-
-  const startAlgorithm = () => {
+  const startAlgorithm = async () => {
     setStart(true);
     const arrForWork = convertStrToArr();
-    if(arrForWork.length===1){
-      arrForWork[0].type = ElementStates.Modified;
-      setStart(false);
-    }else{
-      arrForWork[0].type = ElementStates.Changing;
-      arrForWork[arrForWork.length-1].type = ElementStates.Changing;
-      setTimeout(()=>sortArr(arrForWork, 0, arrForWork.length-1), DELAY_IN_MS);
-    }
     setRenderArray(arrForWork);
+    setRenderArray(await sortArr(arrForWork, setRenderArray));
+    setStart(false);
   }
 
   return (
