@@ -32,6 +32,7 @@ exports[`Button component tests loader 1`] = `
   <img
     alt="Загрузка."
     className="loader_icon"
+    data-cy="loader"
     src="loader.svg"
   />
 </button>

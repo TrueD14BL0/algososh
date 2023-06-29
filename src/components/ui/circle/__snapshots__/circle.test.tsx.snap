@@ -3,22 +3,28 @@
 exports[`Circle component tests Changing style 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
+    data-cy="head"
   />
   <div
     className="circle   changing"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   />
   <div
     className="text text_type_input text_color_input mt-4 absolute tail30 element"
+    data-cy="tail"
   />
 </div>
 `;
@@ -26,22 +32,28 @@ exports[`Circle component tests Changing style 1`] = `
 exports[`Circle component tests Default style 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
+    data-cy="head"
   />
   <div
     className="circle   default"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   />
   <div
     className="text text_type_input text_color_input mt-4 absolute tail30 element"
+    data-cy="tail"
   />
 </div>
 `;
@@ -49,22 +61,28 @@ exports[`Circle component tests Default style 1`] = `
 exports[`Circle component tests Modified style 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
+    data-cy="head"
   />
   <div
     className="circle   modified"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   />
   <div
     className="text text_type_input text_color_input mt-4 absolute tail30 element"
+    data-cy="tail"
   />
 </div>
 `;
@@ -72,22 +90,28 @@ exports[`Circle component tests Modified style 1`] = `
 exports[`Circle component tests empty 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
+    data-cy="head"
   />
   <div
     className="circle   default"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   />
   <div
     className="text text_type_input text_color_input mt-4 absolute tail30 element"
+    data-cy="tail"
   />
 </div>
 `;
@@ -95,43 +119,55 @@ exports[`Circle component tests empty 1`] = `
 exports[`Circle component tests head elem style 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
+    data-cy="head"
   >
     <div
       className="content "
+      data-cy="circle_element"
     >
       <div
         className="text text_type_input text_color_input mb-4 absolute head element"
+        data-cy="head"
       />
       <div
         className="circle   default"
+        data-cy="border"
       >
         <p
           className="text text_type_circle text_color_input letter"
+          data-cy="letter"
         />
       </div>
       <p
         className="text text_type_input text_color_input mt-4 absolute index"
+        data-cy="index"
       />
       <div
         className="text text_type_input text_color_input mt-4 absolute tail30 element"
+        data-cy="tail"
       />
     </div>
   </div>
   <div
     className="circle   default"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   />
   <div
     className="text text_type_input text_color_input mt-4 absolute tail30 element"
+    data-cy="tail"
   />
 </div>
 `;
@@ -139,24 +175,30 @@ exports[`Circle component tests head elem style 1`] = `
 exports[`Circle component tests head style 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head string"
+    data-cy="head"
   >
     head
   </div>
   <div
     className="circle   default"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   />
   <div
     className="text text_type_input text_color_input mt-4 absolute tail30 element"
+    data-cy="tail"
   />
 </div>
 `;
@@ -164,24 +206,30 @@ exports[`Circle component tests head style 1`] = `
 exports[`Circle component tests index 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
+    data-cy="head"
   />
   <div
     className="circle   default"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   >
     13
   </p>
   <div
     className="text text_type_input text_color_input mt-4 absolute tail60 element"
+    data-cy="tail"
   />
 </div>
 `;
@@ -189,24 +237,30 @@ exports[`Circle component tests index 1`] = `
 exports[`Circle component tests letter 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
+    data-cy="head"
   />
   <div
     className="circle   default"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     >
       666
     </p>
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   />
   <div
     className="text text_type_input text_color_input mt-4 absolute tail30 element"
+    data-cy="tail"
   />
 </div>
 `;
@@ -214,22 +268,28 @@ exports[`Circle component tests letter 1`] = `
 exports[`Circle component tests small 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
+    data-cy="head"
   />
   <div
     className="circle  small default"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   />
   <div
     className="text text_type_input text_color_input mt-4 absolute tail30 element"
+    data-cy="tail"
   />
 </div>
 `;
@@ -237,41 +297,53 @@ exports[`Circle component tests small 1`] = `
 exports[`Circle component tests tail elem style 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
+    data-cy="head"
   />
   <div
     className="circle   default"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   />
   <div
     className="text text_type_input text_color_input mt-4 absolute tail30 element"
+    data-cy="tail"
   >
     <div
       className="content "
+      data-cy="circle_element"
     >
       <div
         className="text text_type_input text_color_input mb-4 absolute head element"
+        data-cy="head"
       />
       <div
         className="circle   default"
+        data-cy="border"
       >
         <p
           className="text text_type_circle text_color_input letter"
+          data-cy="letter"
         />
       </div>
       <p
         className="text text_type_input text_color_input mt-4 absolute index"
+        data-cy="index"
       />
       <div
         className="text text_type_input text_color_input mt-4 absolute tail30 element"
+        data-cy="tail"
       />
     </div>
   </div>
@@ -281,22 +353,28 @@ exports[`Circle component tests tail elem style 1`] = `
 exports[`Circle component tests tail style 1`] = `
 <div
   className="content "
+  data-cy="circle_element"
 >
   <div
     className="text text_type_input text_color_input mb-4 absolute head element"
+    data-cy="head"
   />
   <div
     className="circle   default"
+    data-cy="border"
   >
     <p
       className="text text_type_circle text_color_input letter"
+      data-cy="letter"
     />
   </div>
   <p
     className="text text_type_input text_color_input mt-4 absolute index"
+    data-cy="index"
   />
   <div
     className="text text_type_input text_color_input mt-4 absolute tail30 string"
+    data-cy="tail"
   >
     tail
   </div>
